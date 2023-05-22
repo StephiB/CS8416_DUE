@@ -8,7 +8,6 @@
 #else
 #include "WProgram.h"
 #endif
-#include <Wire.h>
 #include <SPI.h>
 
 
