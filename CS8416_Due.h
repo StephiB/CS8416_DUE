@@ -198,6 +198,8 @@ class CS8416  {
 	void	   initiate(void);
 	void	   clockSwitch(boolean cls);
 	void	   muteOutput(boolean mto);
+	bool	   writeBytes(int startAddr, const byte* array, int numBytes);
+	bool	   readBytes(int startAddr, byte array[], int numBytes); 
 	
 	private:
 
