@@ -202,8 +202,5 @@ class CS8416  {
 	bool	   readBytes(int startAddr, byte array[], int numBytes); 
 	
 	private:
-
-	inline uint8_t  i2cread(void);
-	inline void     i2cwrite(uint8_t x);
 	uint8_t  _cs;
 };
