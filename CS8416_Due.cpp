@@ -41,8 +41,7 @@ bool CS8416::begin() {
 //	Initiate: Run, I²S, 16bit, de-emphasis filter auto-select on,
 //	GPIO0 = TX, GPIO1 = INT, GPIO2 = 96kHz
 /**************************************************************************/
-void CS8416::initiate() {
-	
+void CS8416::initiate() {	
 	SPI.setClockDivider(_cs, 21);
 	SPI.setBitOrder(_cs, MSBFIRST);
 	SPI.setDataMode(_cs, SPI_MODE1);
@@ -63,7 +62,6 @@ void CS8416::initiate() {
 //	Writes 8-bits to the specified destination register
 /**************************************************************************/
 void CS8416::writeRegister(uint8_t reg, uint8_t value) {
-
 	SPI.setClockDivider(_cs, 21);
 	SPI.setBitOrder(_cs, MSBFIRST);
 	SPI.setDataMode(_cs, SPI_MODE1);
@@ -76,7 +74,6 @@ void CS8416::writeRegister(uint8_t reg, uint8_t value) {
 /**************************************************************************/
 uint8_t CS8416::readRegister(uint8_t reg) {
 	uint8_t value;
-
 	SPI.setClockDivider(_cs, 21);
 	SPI.setBitOrder(_cs, MSBFIRST);
 	SPI.setDataMode(_cs, SPI_MODE1);
@@ -84,7 +81,6 @@ uint8_t CS8416::readRegister(uint8_t reg) {
 	SPI.transfer(_cs, reg, SPI_LAST);
 	delayMicroseconds(20);
 	value = SPI.transfer(_cs, CS8416_READ_REG);
-
 	return value;
 }
 /**************************************************************************/
@@ -96,12 +92,12 @@ bool CS8416::writeBytes(int startAddr, const byte* array, int numBytes) {
 	SPI.setDataMode(_cs, SPI_MODE1);
 	SPI.transfer(_cs, CS8416_WRITE_REG, SPI_CONTINUE);
 	SPI.transfer(_cs, startAddr, SPI_CONTINUE);
-	for (uint8_t i = 0; i <= numBytes; i++) {
+	for (uint8_t i = 0; i < numBytes; i++) {
 		if (i == numBytes) {
-			array[i] = SPI.transfer(_cs, array[i], SPI_LAST);
+			SPI.transfer(_cs, array[i], SPI_LAST);
 		}
 		else {
-			array[i] = SPI.transfer(_cs, array[i], SPI_CONTINUE);
+			SPI.transfer(_cs, array[i], SPI_CONTINUE);
 		}
 	}
 	return true;
@@ -117,13 +113,13 @@ bool CS8416::readBytes(int startAddr, byte array[], int numBytes) {
 	SPI.transfer(_cs, startAddr, SPI_LAST);
 	delayMicroseconds(20);
 	SPI.transfer(_cs, CS8416_READ_REG);
-	for (uint8_t i = 0; i <= numBytes; i++) {
-		if (i == numBytes) {
-			array[i] = SPI.transfer(_cs, 0×00, SPI_LAST);
+	for (uint8_t i = 0; i < numBytes; i++) {
+	if (i == numBytes) {
+			array[i] = SPI.transfer(_cs, 0x00, SPI_LAST);
 		}
 		else {
-			array[i] = SPI.transfer(_cs, 0×00, SPI_CONTINUE);
-		}	
+			array[i] = SPI.transfer(_cs, 0x00, SPI_CONTINUE);
+		}
 	}
 	return true;
 }
