@@ -24,8 +24,8 @@ bool CS8416::begin() {
 	digitalWrite(_cs, HIGH);
 	SPI.begin();
 	SPI.setClockDivider(_cs, 21);
-	SPI.setBitOrder(MSBFIRST);
-	SPI.setDataMode(SPI_MODE0);
+	SPI.setBitOrder(_cs, MSBFIRST);
+	SPI.setDataMode(_cs, SPI_MODE1); //Data is clocked in on the rising edge of CCLK and out on the falling edge. See Datasheet 12.1 SPI Mode
 	SPI.transfer(_cs, CS8416_WRITE_REG, SPI_CONTINUE);
 	SPI.transfer(_cs, CS8416_ID_VERSION, SPI_LAST);
 	delayMicroseconds(20);
@@ -44,8 +44,8 @@ bool CS8416::begin() {
 void CS8416::initiate() {
 	
 	SPI.setClockDivider(_cs, 21);
-	SPI.setBitOrder(MSBFIRST);
-	SPI.setDataMode(SPI_MODE0);
+	SPI.setBitOrder(_cs, MSBFIRST);
+	SPI.setDataMode(_cs, SPI_MODE1);
 	SPI.transfer(_cs, CS8416_WRITE_REG, SPI_CONTINUE);
 	SPI.transfer(_cs, (INCR & 0x00), SPI_CONTINUE);
 	SPI.transfer(_cs, 0x00, SPI_CONTINUE);
@@ -65,8 +65,8 @@ void CS8416::initiate() {
 void CS8416::writeRegister(uint8_t reg, uint8_t value) {
 
 	SPI.setClockDivider(_cs, 21);
-	SPI.setBitOrder(MSBFIRST);
-	SPI.setDataMode(SPI_MODE0);
+	SPI.setBitOrder(_cs, MSBFIRST);
+	SPI.setDataMode(_cs, SPI_MODE1);
 	SPI.transfer(_cs, CS8416_WRITE_REG, SPI_CONTINUE);
 	SPI.transfer(_cs, reg, SPI_CONTINUE);
 	SPI.transfer(_cs, value, SPI_LAST);
@@ -78,8 +78,8 @@ uint8_t CS8416::readRegister(uint8_t reg) {
 	uint8_t value;
 
 	SPI.setClockDivider(_cs, 21);
-	SPI.setBitOrder(MSBFIRST);
-	SPI.setDataMode(SPI_MODE0);
+	SPI.setBitOrder(_cs, MSBFIRST);
+	SPI.setDataMode(_cs, SPI_MODE1);
 	SPI.transfer(_cs, CS8416_WRITE_REG, SPI_CONTINUE);
 	SPI.transfer(_cs, reg, SPI_LAST);
 	delayMicroseconds(20);
@@ -92,12 +92,12 @@ uint8_t CS8416::readRegister(uint8_t reg) {
 /**************************************************************************/
 bool CS8416::writeBytes(int startAddr, const byte* array, int numBytes) {
 	SPI.setClockDivider(_cs, 21);
-	SPI.setBitOrder(MSBFIRST);
-	SPI.setDataMode(SPI_MODE0);
+	SPI.setBitOrder(_cs, MSBFIRST);
+	SPI.setDataMode(_cs, SPI_MODE1);
 	SPI.transfer(_cs, CS8416_WRITE_REG, SPI_CONTINUE);
 	SPI.transfer(_cs, startAddr, SPI_CONTINUE);
-	for (uint8_t i = 0; i < numBytes; i++) {
-		if (i == num) {
+	for (uint8_t i = 0; i <= numBytes; i++) {
+		if (i == numBytes) {
 			array[i] = SPI.transfer(_cs, array[i], SPI_LAST);
 		}
 		else {
@@ -111,14 +111,14 @@ bool CS8416::writeBytes(int startAddr, const byte* array, int numBytes) {
 /**************************************************************************/
 bool CS8416::readBytes(int startAddr, byte array[], int numBytes) {
 	SPI.setClockDivider(_cs, 21);
-	SPI.setBitOrder(MSBFIRST);
-	SPI.setDataMode(SPI_MODE0);
+	SPI.setBitOrder(_cs, MSBFIRST);
+	SPI.setDataMode(_cs, SPI_MODE1);
 	SPI.transfer(_cs, CS8416_WRITE_REG, SPI_CONTINUE);
 	SPI.transfer(_cs, startAddr, SPI_LAST);
 	delayMicroseconds(20);
 	SPI.transfer(_cs, CS8416_READ_REG);
-	for (uint8_t i = 0; i < num; i++) {
-		if (i == num) {
+	for (uint8_t i = 0; i <= numBytes; i++) {
+		if (i == numBytes) {
 			array[i] = SPI.transfer(_cs, 0×00, SPI_LAST);
 		}
 		else {
@@ -135,8 +135,8 @@ void CS8416::changeInput(uint8_t num) {
 	uint8_t rx = num << 3;
 	muteOutput(true);
 	SPI.setClockDivider(_cs, 21);
-	SPI.setBitOrder(MSBFIRST);
-	SPI.setDataMode(SPI_MODE0);
+	SPI.setBitOrder(_cs, MSBFIRST);
+	SPI.setDataMode(_cs, SPI_MODE1);
 	SPI.transfer(_cs, CS8416_WRITE_REG, SPI_CONTINUE);
 	SPI.transfer(_cs, CS8416_CTRL4, SPI_CONTINUE);
 	SPI.transfer(_cs, (CTRL4_RUN | (CTRL4_RXSEL & rx ) | (CTRL4_TXSEL & tx)), SPI_LAST);
@@ -145,7 +145,7 @@ void CS8416::changeInput(uint8_t num) {
 /**************************************************************************/
 //	Automatic clock switching
 /**************************************************************************/
-void CS8416::clockSwitch(boolean cls) {
+void CS8416::clockSwitch(bool cls) {
 	uint8_t h;
 	if (!cls){
 		h = 0;
@@ -155,8 +155,8 @@ void CS8416::clockSwitch(boolean cls) {
 	}
 	uint8_t switchbit = h << 7;
 	SPI.setClockDivider(_cs, 21);
-	SPI.setBitOrder(MSBFIRST);
-	SPI.setDataMode(SPI_MODE0);
+	SPI.setBitOrder(_cs, MSBFIRST);
+	SPI.setDataMode(_cs, SPI_MODE1);
 	SPI.transfer(_cs, CS8416_WRITE_REG, SPI_CONTINUE);
 	SPI.transfer(_cs, CS8416_CTRL1, SPI_CONTINUE);
 	SPI.transfer(_cs, (CTRL1_SWCLK & switchbit), SPI_LAST);
@@ -164,7 +164,7 @@ void CS8416::clockSwitch(boolean cls) {
 /**************************************************************************/
 //	Mute
 /**************************************************************************/
-void CS8416::muteOutput(boolean mto) {
+void CS8416::muteOutput(bool mto) {
 	uint8_t h;
 	if (!mto){
 		h = 0;
@@ -174,8 +174,8 @@ void CS8416::muteOutput(boolean mto) {
 	}
 	uint8_t mutebit = h << 6;
 	SPI.setClockDivider(_cs, 21);
-	SPI.setBitOrder(MSBFIRST);
-	SPI.setDataMode(SPI_MODE0);
+	SPI.setBitOrder(_cs, MSBFIRST);
+	SPI.setDataMode(_cs, SPI_MODE1);
 	SPI.transfer(_cs, CS8416_WRITE_REG, SPI_CONTINUE);
 	SPI.transfer(_cs, CS8416_CTRL1, SPI_CONTINUE);
 	SPI.transfer(_cs, (CTRL1_MUTESAO & mutebit), SPI_LAST);

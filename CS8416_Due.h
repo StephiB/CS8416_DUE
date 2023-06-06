@@ -196,8 +196,8 @@ class CS8416  {
 	uint8_t    readRegister(uint8_t reg);
 	void       changeInput(uint8_t num);
 	void	   initiate(void);
-	void	   clockSwitch(boolean cls);
-	void	   muteOutput(boolean mto);
+	void	   clockSwitch(bool cls);
+	void	   muteOutput(bool mto);
 	bool	   writeBytes(int startAddr, const byte* array, int numBytes);
 	bool	   readBytes(int startAddr, byte array[], int numBytes); 
 	
