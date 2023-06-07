@@ -199,7 +199,8 @@ class CS8416  {
 	void	   clockSwitch(bool cls);
 	void	   muteOutput(bool mto);
 	bool	   writeBytes(int startAddr, const byte* array, int numBytes);
-	bool	   readBytes(int startAddr, byte array[], int numBytes); 
+	bool	   readBytes(int startAddr, byte array[], int numBytes);
+	void       readQsubcodes(byte array[10]); 
 	
 	private:
 	uint8_t  _cs;

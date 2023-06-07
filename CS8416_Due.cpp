@@ -41,7 +41,7 @@ bool CS8416::begin() {
 //	Initiate: Run, I²S, 16bit, de-emphasis filter auto-select on,
 //	GPIO0 = TX, GPIO1 = INT, GPIO2 = 96kHz
 /**************************************************************************/
-void CS8416::initiate() {	
+void CS8416::initiate() {
 	SPI.setClockDivider(_cs, 21);
 	SPI.setBitOrder(_cs, MSBFIRST);
 	SPI.setDataMode(_cs, SPI_MODE1);
@@ -112,9 +112,9 @@ bool CS8416::readBytes(int startAddr, byte array[], int numBytes) {
 	SPI.transfer(_cs, CS8416_WRITE_REG, SPI_CONTINUE);
 	SPI.transfer(_cs, startAddr, SPI_LAST);
 	delayMicroseconds(20);
-	SPI.transfer(_cs, CS8416_READ_REG);
+	SPI.transfer(_cs, CS8416_READ_REG, SPI_CONTINUE);
 	for (uint8_t i = 0; i < numBytes; i++) {
-	if (i == numBytes) {
+		if (i == numBytes) {
 			array[i] = SPI.transfer(_cs, 0x00, SPI_LAST);
 		}
 		else {
@@ -122,6 +122,31 @@ bool CS8416::readBytes(int startAddr, byte array[], int numBytes) {
 		}
 	}
 	return true;
+}
+/**************************************************************************/
+//	Read Q-subcode block 
+/**************************************************************************/
+void CS8416::readQsubcodes(byte array[10]) {
+	SPI.setClockDivider(_cs, 21);
+	SPI.setBitOrder(_cs, MSBFIRST);
+	SPI.setDataMode(_cs, SPI_MODE1);
+	SPI.transfer(_cs, CS8416_WRITE_REG, SPI_CONTINUE);
+	SPI.setBitOrder(_cs, LSBFIRST); //Each byte is LSB first with respect to the 80 Q-subcode bits.
+	SPI.transfer(_cs, CS8416_Q_CH_SUB_07_00, SPI_LAST);
+	delayMicroseconds(20);
+	SPI.setBitOrder(_cs, MSBFIRST);
+	SPI.transfer(_cs, CS8416_READ_REG, SPI_CONTINUE);
+	SPI.setBitOrder(_cs, LSBFIRST);
+	array[1] = SPI.transfer(_cs, CS8416_Q_CH_SUB_07_00, SPI_CONTINUE);  //   (R)   Control
+	array[2] = SPI.transfer(_cs, CS8416_Q_CH_SUB_15_08, SPI_CONTINUE);  //   (R)   Track
+	array[3] = SPI.transfer(_cs, CS8416_Q_CH_SUB_23_16, SPI_CONTINUE);  //   (R)   Index
+	array[4] = SPI.transfer(_cs, CS8416_Q_CH_SUB_31_24, SPI_CONTINUE);  //   (R)   Minute
+	array[5] = SPI.transfer(_cs, CS8416_Q_CH_SUB_39_32, SPI_CONTINUE);  //   (R)   Second
+	array[6] = SPI.transfer(_cs, CS8416_Q_CH_SUB_47_40, SPI_CONTINUE);  //   (R)   Frame
+	array[7] = SPI.transfer(_cs, CS8416_Q_CH_SUB_55_48, SPI_CONTINUE);  //   (R)   Zero
+	array[8] = SPI.transfer(_cs, CS8416_Q_CH_SUB_63_56, SPI_CONTINUE);  //   (R)   ABS Minute
+	array[9] = SPI.transfer(_cs, CS8416_Q_CH_SUB_71_64, SPI_CONTINUE);  //   (R)   ABS Second
+	array[10] = SPI.transfer(_cs, CS8416_Q_CH_SUB_79_72, SPI_LAST);     //   (R)   ABS Frame
 }
 /**************************************************************************/
 //	Change used input and source for TX
