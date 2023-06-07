@@ -137,16 +137,16 @@ void CS8416::readQsubcodes(byte array[10]) {
 	SPI.setBitOrder(_cs, MSBFIRST);
 	SPI.transfer(_cs, CS8416_READ_REG, SPI_CONTINUE);
 	SPI.setBitOrder(_cs, LSBFIRST);
-	array[1] = SPI.transfer(_cs, CS8416_Q_CH_SUB_07_00, SPI_CONTINUE);  //   (R)   Control
-	array[2] = SPI.transfer(_cs, CS8416_Q_CH_SUB_15_08, SPI_CONTINUE);  //   (R)   Track
-	array[3] = SPI.transfer(_cs, CS8416_Q_CH_SUB_23_16, SPI_CONTINUE);  //   (R)   Index
-	array[4] = SPI.transfer(_cs, CS8416_Q_CH_SUB_31_24, SPI_CONTINUE);  //   (R)   Minute
-	array[5] = SPI.transfer(_cs, CS8416_Q_CH_SUB_39_32, SPI_CONTINUE);  //   (R)   Second
-	array[6] = SPI.transfer(_cs, CS8416_Q_CH_SUB_47_40, SPI_CONTINUE);  //   (R)   Frame
-	array[7] = SPI.transfer(_cs, CS8416_Q_CH_SUB_55_48, SPI_CONTINUE);  //   (R)   Zero
-	array[8] = SPI.transfer(_cs, CS8416_Q_CH_SUB_63_56, SPI_CONTINUE);  //   (R)   ABS Minute
-	array[9] = SPI.transfer(_cs, CS8416_Q_CH_SUB_71_64, SPI_CONTINUE);  //   (R)   ABS Second
-	array[10] = SPI.transfer(_cs, CS8416_Q_CH_SUB_79_72, SPI_LAST);     //   (R)   ABS Frame
+	array[0] = SPI.transfer(_cs, CS8416_Q_CH_SUB_07_00, SPI_CONTINUE);  //   (R)   Control
+	array[1] = SPI.transfer(_cs, CS8416_Q_CH_SUB_15_08, SPI_CONTINUE);  //   (R)   Track
+	array[2] = SPI.transfer(_cs, CS8416_Q_CH_SUB_23_16, SPI_CONTINUE);  //   (R)   Index
+	array[3] = SPI.transfer(_cs, CS8416_Q_CH_SUB_31_24, SPI_CONTINUE);  //   (R)   Minute
+	array[4] = SPI.transfer(_cs, CS8416_Q_CH_SUB_39_32, SPI_CONTINUE);  //   (R)   Second
+	array[5] = SPI.transfer(_cs, CS8416_Q_CH_SUB_47_40, SPI_CONTINUE);  //   (R)   Frame
+	array[6] = SPI.transfer(_cs, CS8416_Q_CH_SUB_55_48, SPI_CONTINUE);  //   (R)   Zero
+	array[7] = SPI.transfer(_cs, CS8416_Q_CH_SUB_63_56, SPI_CONTINUE);  //   (R)   ABS Minute
+	array[8] = SPI.transfer(_cs, CS8416_Q_CH_SUB_71_64, SPI_CONTINUE);  //   (R)   ABS Second
+	array[9] = SPI.transfer(_cs, CS8416_Q_CH_SUB_79_72, SPI_LAST);     //   (R)   ABS Frame
 }
 /**************************************************************************/
 //	Change used input and source for TX
